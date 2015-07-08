@@ -6,16 +6,16 @@ about=This plugin is a tool for toggle visibility of active layer, for example, 
   This plugin is developed on the demand of IBAMA(Brazilian Institute of Environment and Renewable Natural Resources)
   http://www.ibama.gov.br
 
-version=0.1
+version=0.2
 qgisMinimumVersion=2.8
 # category=
 author=Luiz Motta
 email=motta.luiz@gmail.com
 
-changelog=0.1
-  - Start of plugin
+changelog=0.2
+  - Added unsetMapTool in unload tool
   0.1
-  - 
+  - Start of plugin
 tags=visibility,layers, IBAMA
 homepage=https://github.com/lmotta/toggleactivelayer_plugin
 tracker=http://hub.qgis.org/projects/toggleactivelayer

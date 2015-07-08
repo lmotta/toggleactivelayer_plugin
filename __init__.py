@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 /***************************************************************************
-Name                 : Toogle Active Layer
+Name                 : Toggle Active Layer
 Description          : Plugin for toggle visibility of active layer
 Date                 : June, 2015
 copyright            : (C) 2015 by Luiz Motta
@@ -22,7 +22,7 @@ email                : motta.luiz@gmail.com
 from PyQt4.QtGui import ( QAction, QIcon )
 from PyQt4.QtCore import pyqtSlot
 
-from toogleactivelayer import ToggleActiveLayerMapTool
+from toggleactivelayer import ToggleActiveLayerMapTool
 
 import os
 
@@ -40,7 +40,7 @@ class ToggleActiveLayerPlugin:
 
   def initGui(self):
     title = "Toggle visibility of active layer"
-    icon = QIcon( os.path.join( os.path.dirname(__file__), 'toogleactivelayer.png' ) )
+    icon = QIcon( os.path.join( os.path.dirname(__file__), 'toggleactivelayer.png' ) )
     self.action = QAction( icon, title, self.iface.mainWindow() )
     self.action.setObjectName( "ToggleActiveLayerPlugin" )
     self.action.setWhatsThis( title )
