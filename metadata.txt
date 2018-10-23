@@ -17,7 +17,7 @@ email:motta.luiz@gmail.com
 tags:visibility,layers, IBAMA
 
 homepage:https://github.com/lmotta/toggleactivelayer_plugin
-tracker:http://hub.qgis.org/projects/toggleactivelayer
+tracker:https://github.com/lmotta/toggleactivelayer_plugin
 repository:https://github.com/lmotta/toggleactivelayer_plugin
 
 icon:toggleactivelayer.png
