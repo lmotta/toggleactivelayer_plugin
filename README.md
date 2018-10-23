@@ -12,6 +12,8 @@ Plugin for toggle visibility of active layer
 Luiz Motta
 
 ## Changelog
+- 2018-10-23
+Fixed translate
 - 2018-10-18
 Migrated to QGIS 3.2
 - 2015-07-07
