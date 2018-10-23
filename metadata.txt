@@ -1,25 +1,33 @@
 [general]
-name=Toggle Active Layer
-description=Plugin for toggle visibility of active layer
-about=This plugin is a tool for toggle visibility of active layer, for example, you can see the difference with others layers below, when pressed and released.
+name:Toggle Active Layer
+description:Plugin for toggle visibility of active layer
+about:This plugin is a tool for toggle visibility of active layer, for example, you can see the difference with others layers below, when pressed and released.
   See presentation in http://pt.slideshare.net/LuizMotta3/presentation-2015-0701ibamaplugins
   This plugin is developed on the demand of IBAMA(Brazilian Institute of Environment and Renewable Natural Resources)
   http://www.ibama.gov.br
 
-version=0.2
-qgisMinimumVersion=2.8
-# category=
-author=Luiz Motta
-email=motta.luiz@gmail.com
+version:1.0
+qgisMinimumVersion:3.2
 
-changelog=0.2
+author:Luiz Motta
+email:motta.luiz@gmail.com
+
+# category:
+
+tags:visibility,layers, IBAMA
+
+homepage:https://github.com/lmotta/toggleactivelayer_plugin
+tracker:http://hub.qgis.org/projects/toggleactivelayer
+repository:https://github.com/lmotta/toggleactivelayer_plugin
+
+icon:toggleactivelayer.png
+
+experimental:True
+deprecated:False
+
+changelog:1.0(2018-10-18)
+  - Migrated to QGIS 3.2
+  0.2
   - Added unsetMapTool in unload tool
   0.1
   - Start of plugin
-tags=visibility,layers, IBAMA
-homepage=https://github.com/lmotta/toggleactivelayer_plugin
-tracker=http://hub.qgis.org/projects/toggleactivelayer
-repository=https://github.com/lmotta/toggleactivelayer_plugin
-icon=toggleactivelayer.png
-experimental=True
-deprecated=False

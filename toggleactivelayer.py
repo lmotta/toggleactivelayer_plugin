@@ -19,40 +19,78 @@ email                : motta.luiz@gmail.com
  ***************************************************************************/
 """
 
-from PyQt4.QtCore import ( Qt )
-from PyQt4.QtGui import ( QCursor )
+from qgis.PyQt.QtCore import Qt, QCoreApplication
+from qgis.PyQt.QtGui import QCursor
 
-from qgis.gui import ( QgsMessageBar, QgsMapTool )
-from qgis.core import ( QgsLayerTreeLayer )
+from qgis.gui import QgsMessageBar, QgsMapTool
+from qgis.core import QgsLayerTreeLayer, QgsLayerTreeGroup, QgsLayerTree
 
-class ToggleActiveLayerMapTool(QgsMapTool):
+from .translate import Translate
+
+class ToggleActiveLayerTool(QgsMapTool):
   def __init__(self, iface):
-    super(ToggleActiveLayerMapTool, self).__init__( iface.mapCanvas() )
+    super().__init__( iface.mapCanvas() )
     self.view = iface.layerTreeView()
+    self.node  = None
     self.msgBar = iface.messageBar()
-    self.checkState = self.layerNode = None
-    self.setCursor( QCursor( Qt.CrossCursor ) )
+    self.pluginName = 'ToggleActiveLayer'
+    self.setCursor( QCursor( Qt.PointingHandCursor ) )
+    self.translate = Translate( self.pluginName.lower() )
+
+  def setVisibilityCheckedParents(self, node, checked):
+    parent = node.parent()
+    if isinstance( parent , QgsLayerTree ):
+      return
+    if ( checked == Qt.Checked and parent.itemVisibilityChecked() ) or ( checked == Qt.Unchecked  and not parent.itemVisibilityChecked() ):
+      return
+    parent.setItemVisibilityChecked( checked )
+    self.setVisibilityCheckedParents( parent, checked )
+
+  def hasVisibleChildren(self, node):
+    for children in node.children():
+      if children.itemVisibilityChecked():
+        return True
+    return False
 
   def canvasPressEvent(self, e):
-    self.layerNode  = None
+    self.msgBar.popWidget()
     node = self.view.currentNode()
-    if not isinstance( node , QgsLayerTreeLayer):
-      msg = "Select active layer in legend."
-      self.msgBar.pushMessage( "ToggleActiveLayerMapTool", msg, QgsMessageBar.WARNING, 4 )
+    if isinstance( node , QgsLayerTreeLayer) and not node.layer().isSpatial():
+      self.node = None
+      f = QCoreApplication.translate('ToggleActiveLayer', "'{}' is not spatial layer(Vector or Raster)")
+      msg = f.format( node.name() )
+      self.msgBar.pushWarning( self.pluginName, msg )
+      return
+    if isinstance( node , QgsLayerTreeGroup ) and not self.hasVisibleChildren( node ):
+      self.node = None
+      f = QCoreApplication.translate('ToggleActiveLayer', "'{}' don't have visible layers" )
+      msg = f.format( node.name() )
+      self.msgBar.pushWarning( self.pluginName, msg )
       return
 
-    self.checkState = Qt.Checked if node.isVisible() == Qt.Unchecked else Qt.Unchecked
-    node.setVisible( self.checkState )
-    self.layerNode = node
+    self.checkState = Qt.Checked if node.itemVisibilityChecked() == Qt.Unchecked else Qt.Unchecked
+    node.setItemVisibilityChecked( self.checkState )
+    if self.checkState == Qt.Checked:
+      self.setVisibilityCheckedParents( node,  self.checkState )
+
+    if not node == self.node:
+      if isinstance( node , QgsLayerTreeLayer):
+        f = QCoreApplication.translate('ToggleActiveLayer', "Active layer is '{}'." )
+      else:
+        f = QCoreApplication.translate('ToggleActiveLayer', "Active group is '{}'." )
+      msg = f.format( node.name() )
+      self.msgBar.pushInfo( self.pluginName, msg )
+      self.node = node
 
   def canvasReleaseEvent(self, e):
-    if self.layerNode is None:
+    if self.node is None:
       return
 
     self.checkState = Qt.Checked if self.checkState == Qt.Unchecked else Qt.Unchecked
-    self.layerNode.setVisible( self.checkState )
+    self.node.setItemVisibilityChecked( self.checkState )
+    if self.checkState == Qt.Unchecked:
+      self.setVisibilityCheckedParents( self.node, self.checkState )
 
   def deactivate(self):
-      super( ToggleActiveLayerMapTool, self ).deactivate()
+      super().deactivate()
       self.deactivated.emit()
-

@@ -19,24 +19,26 @@ email                : motta.luiz@gmail.com
  ***************************************************************************/
 """
 
-from PyQt4.QtGui import ( QAction, QIcon )
-from PyQt4.QtCore import pyqtSlot
+from qgis.PyQt.QtCore import QObject, pyqtSlot
+from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.QtWidgets import QAction
 
-from toggleactivelayer import ToggleActiveLayerMapTool
+from .toggleactivelayer import ToggleActiveLayerTool
 
 import os
 
 def classFactory(iface):
   return ToggleActiveLayerPlugin( iface )
 
-class ToggleActiveLayerPlugin:
+class ToggleActiveLayerPlugin(QObject):
 
   def __init__(self, iface):
+    super().__init__()
     self.iface = iface
     self.canvas = iface.mapCanvas() 
 
     self.action = None
-    self.tool = ToggleActiveLayerMapTool( self.iface )
+    self.tool = ToggleActiveLayerTool( self.iface )
 
   def initGui(self):
     title = "Toggle visibility of active layer"
@@ -58,7 +60,7 @@ class ToggleActiveLayerPlugin:
     self.iface.removeToolBarIcon( self.action )
     del self.action
 
-  @pyqtSlot()
-  def run(self):
+  @pyqtSlot(bool)
+  def run(self, checked):
     if self.canvas.mapTool() != self.tool:
       self.canvas.setMapTool( self.tool)
