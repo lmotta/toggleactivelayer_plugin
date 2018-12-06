@@ -12,6 +12,8 @@ Plugin for toggle visibility of active layer
 Luiz Motta
 
 ## Changelog
+- 2018-12-06
+Update metadata
 - 2018-10-23
 Fixed translate
 - 2018-10-18
