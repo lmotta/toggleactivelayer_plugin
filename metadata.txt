@@ -2,7 +2,6 @@
 name:Toggle Active Layer
 description:Plugin for toggle visibility of active layer
 about:This plugin is a tool for toggle visibility of active layer, for example, you can see the difference with others layers below, when pressed and released.
-  See presentation in http://pt.slideshare.net/LuizMotta3/presentation-2015-0701ibamaplugins
   This plugin is developed on the demand of IBAMA(Brazilian Institute of Environment and Renewable Natural Resources)
   http://www.ibama.gov.br
 
