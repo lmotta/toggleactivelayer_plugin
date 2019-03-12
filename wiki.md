@@ -11,7 +11,6 @@
 Select a layer or a group and active the tool.  
 \* If it's a group, it needs to be visible.  
 ![alt-text-1](doc/select_layer.png "Select a layer")  
-![alt-text-1](doc/active_tool.png "Active the tool")  
 
 * **Active the tool :**  
 Click and hold the left button of mouse, when you release the button, will change the visibility.  
