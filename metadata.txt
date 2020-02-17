@@ -5,7 +5,7 @@ about:This plugin is a tool for toggle visibility of active layer, for example, 
   This plugin is developed on the demand of IBAMA(Brazilian Institute of Environment and Renewable Natural Resources)
   http://www.ibama.gov.br
 
-version:1.2
+version:1.3
 qgisMinimumVersion:3.2
 
 author:Luiz Motta
@@ -24,7 +24,9 @@ icon:toggleactivelayer.png
 experimental:False
 deprecated:False
 
-changelog:1.2(2018-12-06)
+changelog:1.3(2020-02-17)
+  Added automatic change of visible/invisible in active layer
+  - 1.2(2018-12-06)
   Update metadata
   - 1.1(2018-10-23)
   Fixed the translate

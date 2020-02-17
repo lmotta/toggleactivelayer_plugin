@@ -48,14 +48,14 @@ class ToggleActiveLayerPlugin(QObject):
     self.tool = ToggleActiveLayerTool( self.iface )
 
   def initGui(self):
-    title = "Toggle visibility of active layer"
+    title = "Toggle visibility of active node"
     icon = QIcon( os.path.join( os.path.dirname(__file__), 'toggleactivelayer.png' ) )
     self.action = QAction( icon, title, self.iface.mainWindow() )
     self.action.setObjectName( "ToggleActiveLayerPlugin" )
     self.action.setWhatsThis( title )
     self.action.setStatusTip( title )
     self.action.triggered.connect( self.run )
-    self.menu = "&Toggle active layer tool"
+    self.menu = "&Toggle active node tool"
 
     # Maptool
     self.action.setCheckable( True )

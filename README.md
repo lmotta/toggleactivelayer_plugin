@@ -12,6 +12,8 @@ Plugin for toggle visibility of active layer
 Luiz Motta
 
 ## Changelog
+- 2020-02-17
+Added automatic change of visible/invisible in active layer
 - 2018-12-06
 Update metadata
 - 2018-10-23

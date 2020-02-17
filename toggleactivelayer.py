@@ -31,72 +31,73 @@ from qgis.PyQt.QtGui import QCursor
 from qgis.gui import QgsMessageBar, QgsMapTool
 from qgis.core import QgsLayerTreeLayer, QgsLayerTreeGroup, QgsLayerTree
 
+from .visibilitylayers import VisibilityLayers
+
 from .translate import Translate
 
 class ToggleActiveLayerTool(QgsMapTool):
-  def __init__(self, iface):
-    super().__init__( iface.mapCanvas() )
-    self.view = iface.layerTreeView()
-    self.node  = None
-    self.msgBar = iface.messageBar()
-    self.pluginName = 'ToggleActiveLayer'
-    self.setCursor( QCursor( Qt.PointingHandCursor ) )
-    self.translate = Translate( self.pluginName.lower() )
+    def __init__(self, iface):
+        super().__init__( iface.mapCanvas() )
+        self.view = iface.layerTreeView()
+        self.msgBar = iface.messageBar()
+        self.pluginName = 'ToggleActiveLayer'
+        self.vl = VisibilityLayers( self.pluginName )
+        self.setCursor( QCursor( Qt.PointingHandCursor ) )
+        self.translate = Translate( self.pluginName.lower() )
 
-  def setVisibilityCheckedParents(self, node, checked):
-    parent = node.parent()
-    if isinstance( parent , QgsLayerTree ):
-      return
-    if ( checked == Qt.Checked and parent.itemVisibilityChecked() ) or ( checked == Qt.Unchecked  and not parent.itemVisibilityChecked() ):
-      return
-    parent.setItemVisibilityChecked( checked )
-    self.setVisibilityCheckedParents( parent, checked )
-
-  def hasVisibleChildren(self, node):
-    for children in node.children():
-      if children.itemVisibilityChecked():
+    def hasVisibleChildren(self, node):
+        for child in node.children():
+            if child.itemVisibilityChecked():
+                return self.hasVisibleChildren( child )
+            else:
+                return False
         return True
-    return False
 
-  def canvasPressEvent(self, e):
-    self.msgBar.popWidget()
-    node = self.view.currentNode()
-    if isinstance( node , QgsLayerTreeLayer) and not node.layer().isSpatial():
-      self.node = None
-      f = QCoreApplication.translate('ToggleActiveLayer', "'{}' is not spatial layer(Vector or Raster)")
-      msg = f.format( node.name() )
-      self.msgBar.pushWarning( self.pluginName, msg )
-      return
-    if isinstance( node , QgsLayerTreeGroup ) and not self.hasVisibleChildren( node ):
-      self.node = None
-      f = QCoreApplication.translate('ToggleActiveLayer', "'{}' don't have visible layers" )
-      msg = f.format( node.name() )
-      self.msgBar.pushWarning( self.pluginName, msg )
-      return
+    def hasVisibleParent(self, node):
+        parent = node.parent()
+        if isinstance( parent , QgsLayerTree ): # Root legend
+            return True
+        if not parent.itemVisibilityChecked():
+            return False
+        return self.hasVisibleParent( parent )
 
-    self.checkState = Qt.Checked if node.itemVisibilityChecked() == Qt.Unchecked else Qt.Unchecked
-    node.setItemVisibilityChecked( self.checkState )
-    if self.checkState == Qt.Checked:
-      self.setVisibilityCheckedParents( node,  self.checkState )
+    def canvasPressEvent(self, e):
+        self.msgBar.popWidget()
+        node = self.view.currentNode()
+        if not node.itemVisibilityChecked():
+            f = QCoreApplication.translate('ToggleActiveLayer', "'{}' isn't visible")
+            msg = f.format( node.name() )
+            self.msgBar.pushWarning( self.pluginName, msg )
+            return
+        if not self.hasVisibleParent( node ):
+            f = QCoreApplication.translate('ToggleActiveLayer', "'{}' don't have visible parents" )
+            msg = f.format( node.name() )
+            self.msgBar.pushWarning( self.pluginName, msg )
+            return
+        if isinstance( node , QgsLayerTreeLayer):
+            if not node.layer().isSpatial():
+                f = QCoreApplication.translate('ToggleActiveLayer', "'{}' is not spatial layer(Vector or Raster)")
+                msg = f.format( node.name() )
+                self.msgBar.pushWarning( self.pluginName, msg )
+                return
+            f = QCoreApplication.translate('ToggleActiveLayer', "Active layer is '{}'." )
+        else:
+            if not self.hasVisibleChildren( node ):
+                f = QCoreApplication.translate('ToggleActiveLayer', "'{}' don't have visible children" )
+                msg = f.format( node.name() )
+                self.msgBar.pushWarning( self.pluginName, msg )
+                return
+            f = QCoreApplication.translate('ToggleActiveLayer', "Active group is '{}'." )
+        
+        if not self.vl.nodeRoot == node:
+            msg = f.format( node.name() )
+            self.msgBar.pushInfo( self.pluginName, msg )
 
-    if not node == self.node:
-      if isinstance( node , QgsLayerTreeLayer):
-        f = QCoreApplication.translate('ToggleActiveLayer', "Active layer is '{}'." )
-      else:
-        f = QCoreApplication.translate('ToggleActiveLayer', "Active group is '{}'." )
-      msg = f.format( node.name() )
-      self.msgBar.pushInfo( self.pluginName, msg )
-      self.node = node
+        self.vl.animationOpacity( node, 1 )
 
-  def canvasReleaseEvent(self, e):
-    if self.node is None:
-      return
+    def canvasReleaseEvent(self, e):
+        self.vl.cancel()
 
-    self.checkState = Qt.Checked if self.checkState == Qt.Unchecked else Qt.Unchecked
-    self.node.setItemVisibilityChecked( self.checkState )
-    if self.checkState == Qt.Unchecked:
-      self.setVisibilityCheckedParents( self.node, self.checkState )
-
-  def deactivate(self):
-      super().deactivate()
-      self.deactivated.emit()
+    def deactivate(self):
+        super().deactivate()
+        self.deactivated.emit()
