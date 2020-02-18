@@ -6,7 +6,6 @@ from qgis.PyQt.QtCore import QObject, pyqtSlot, pyqtSignal
 from qgis.core import (
     Qgis, QgsApplication,
     QgsLayerTreeLayer, QgsLayerTree,
-    QgsMapLayerType,
     QgsTask
 )
 

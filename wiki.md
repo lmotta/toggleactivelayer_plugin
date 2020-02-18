@@ -9,9 +9,9 @@
 
 * **Define a layer or a group for Toggle Active Layer Tool :**  
 Select a layer or a group and active the tool.  
-\* If it's a group, it needs to be visible.  
+\* The selected item needs to be visible.  
 ![alt-text-1](doc/select_layer.png "Select a layer")  
 
 * **Active the tool :**  
-Click and hold the left button of mouse, when you release the button, will change the visibility.  
+Click and hold the left button of mouse, the visibility this item will change automatic, when you release the button, will stop the visibility changes.  
 ![alt-text-1](doc/toggle.gif "Action")  
